@@ -1,0 +1,13 @@
+{
+  "api": "openapi.spec.json",
+  "sdk": "sdk",
+  "plugins": [
+    {
+      "name": "TSModels",
+      "options": {}
+    }
+  ],
+  "settings": {
+    "verbose": true
+  }
+}

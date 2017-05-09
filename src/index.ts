@@ -1,3 +1,3 @@
 #!/usr/bin/env node
-import { OpenAPISDKBuilder } from './osb';
-new OpenAPISDKBuilder()
+import { OpenAPISDKBuilder } from "./core/osb";
+const builder: OpenAPISDKBuilder = new OpenAPISDKBuilder();

@@ -1,0 +1,55 @@
+/**
+* @interface <%= definition.name %>Interface
+* @author Jonathan Casarrubias <t:@johncasarrubias>
+* @author MEAN Expert <gh:mean-expert-official>
+* @license MIT
+* @description This TypeScript interface represents '<%= definition.name %>' contract
+* definition from an OpenAPI specification file.
+**/
+export interface <%= definition.name %>Interface {
+<%= buildProperties(definition.properties) %>
+}
+/**
+* @class <%= definition.name %>
+* @author Jonathan Casarrubias <t:@johncasarrubias>
+* @author MEAN Expert <gh:mean-expert-official>
+* @license MIT
+* @description This TypeScript class represents '<%= definition.name %>' definition
+* from an OpenAPI specification file.
+**/
+export class <%= definition.name %> implements <%= definition.name %>Interface {
+<%= buildProperties(definition.properties) %>
+  /**
+  * @method constructor
+  * @author Jonathan Casarrubias <t:@johncasarrubias>
+  * @author MEAN Expert <gh:mean-expert-official>
+  * @license MIT
+  * @description The constructor will receive data based on <%= definition.name %>Interface
+  * and set the received values into the instance properties.
+  **/
+  constructor(data?: <%= definition.name %>Interface) {
+    if (data) Object.assign(this, data);
+  }
+  /**
+  * @method getModelName
+  * @author Jonathan Casarrubias <t:@johncasarrubias>
+  * @author MEAN Expert <gh:mean-expert-official>
+  * @license MIT
+  * @description The name of the model represented by this $resource,
+  * i.e. `<%= definition.name %>`.
+  **/
+  public static getModelName(): string {
+    return '<%= definition.name  %>';
+  }
+  /**
+  * @method factory
+  * @author Jonathan Casarrubias <t:@johncasarrubias>
+  * @author MEAN Expert <gh:mean-expert-official>
+  * @license MIT
+  * @description
+  * This method creates an instance of <%= definition.name %> for dynamic purposes.
+  **/
+  public static factory(data: <%= definition.name %>Interface): <%= definition.name %>{
+    return new <%= definition.name %>(data);
+  }
+}
