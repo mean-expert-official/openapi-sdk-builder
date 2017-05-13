@@ -11,7 +11,7 @@
     "precompile": "npm run lint",
     "compile": "node_modules/typescript/bin/./tsc",
     "pretest": "npm run compile && npm run copy && npm run build",
-    "copy": "node_modules/copyfiles/./copyfiles src/**/templates/*.ejs dist",
+    "copy": "node_modules/copyfiles/./copyfiles src/**/templates/**/*.ejs dist",
     "build": "cd tests && node ../dist/src/index.js",
     "test": "./node_modules/karma/bin/karma start karma.config.js",
     "lint": "node_modules/tslint/bin/./tslint -c tslint.json 'src/**/*.ts'"
@@ -56,6 +56,7 @@
     "@types/ejs": "^2.3.33",
     "@types/jasmine": "^2.5.47",
     "@types/karma": "^0.13.35",
+    "@types/mkdirp": "^0.3.29",
     "@types/node": "^7.0.18",
     "@types/swagger-parser": "^4.0.0",
     "copyfiles": "^1.2.0",
@@ -65,6 +66,7 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-typescript": "^3.0.1",
     "phantomjs-polyfill-object-assign": "0.0.2",
+    "rxjs": "^5.4.0",
     "tslint": "^5.2.0",
     "typescript": "^2.3.2"
   }

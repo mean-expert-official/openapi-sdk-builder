@@ -1,0 +1,34 @@
+import { HTTPService, IHeaders } from "./core";
+import { Observable } from "rxjs/Observable";
+/**
+ * @class <%= definition.name %>Service
+ * @author Jonathan Casarrubias <t:@johncasarrubias>
+ * @license MIT
+ * @description This TypeScript class provides services to interact through API services
+ * with the model definition named '<%= definition.name %>'.
+ */
+export class <%= definition.name %>Service {
+  private static instance: <%= definition.name %>Service;
+  /**
+   * @method constructor
+   * @author Jonathan Casarrubias <t:@johncasarrubias>
+   * @license MIT
+   * @description This <%= definition.name %>Service class is a singleton
+   * class, therfore no new instances are allowed and constructor is private.
+   */
+  private constructor(private http: HTTPService = HTTPService.getInstance()) {
+  }
+  /**
+   * @method getInstance
+   * @author Jonathan Casarrubias <t:@johncasarrubias>
+   * @license MIT
+   * @description This method will return a singleton instance from the
+   * <%= definition.name %>Service class.
+   */
+  public static getInstance(): <%= definition.name %>Service {
+    if (!<%= definition.name %>Service.instance) {
+      <%= definition.name %>Service.instance = new <%= definition.name %>Service();
+    }
+    return <%= definition.name %>Service.instance;
+  }<%- scope.buildDefinitionPaths(definition) %>
+}
