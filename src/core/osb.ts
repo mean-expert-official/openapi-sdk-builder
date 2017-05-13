@@ -24,6 +24,7 @@ export class OpenAPISDKBuilder {
       verbose: false,
     },
   };
+  private builtinPluginMap: any = {};
   /**
    * SDK Builder Constructor
    */
@@ -35,6 +36,7 @@ export class OpenAPISDKBuilder {
    * and finally it will call the bootstrap method to load all the configured plugins.
    */
   private async setup() {
+    await this.getBuiltinPluginsMap();
     await this.setupOptions();
     SwaggerParser.parse(this.options.api, (err: Error, api: object) => {
       if (err) {
@@ -45,7 +47,7 @@ export class OpenAPISDKBuilder {
     });
   }
   /**
-   * @method setup
+   * @method setupOptions
    * @description This method will get the options from a sdk.config.json file
    * located in the root of a project and then parse the specification file
    * and finally it will call the bootstrap method to load all the configured plugins.
@@ -67,6 +69,20 @@ export class OpenAPISDKBuilder {
     });
   }
   /**
+   * @method getBuiltinPluginsMap
+   * @description This method will get the list of built in plugins and map them
+   * to the builtinPluginMap object variable.
+   */
+  private getBuiltinPluginsMap(): Promise<void> {
+    return new Promise<void>((resolve: () => void) => {
+      const srcPath: string = path.resolve(__dirname, "../plugins");
+      fs.readdirSync(srcPath)
+        .filter((file: any) => fs.statSync(path.join(srcPath, file)).isDirectory())
+        .forEach((dir: string) => this.builtinPluginMap[dir] = true);
+      resolve();
+    });
+  }
+  /**
    * @method bootstrap
    * @description This method will get the options from a sdk.config.json file
    * located in the root of a project and then parse the specification file
@@ -78,8 +94,15 @@ export class OpenAPISDKBuilder {
     }
     Console.log("\n--------------------------------------------------------------------\n");
     this.options.plugins.forEach((pluginOptions: IPluginOptions) => {
-      const module: any = require(`../plugins/${ pluginOptions.name }`);
-      const plugin: IPlugin = new module[pluginOptions.name](api, this.options);
+      let pluginModule: any;
+      if  (pluginOptions.name.indexOf("local:") !== -1) {
+        pluginModule = require(path.resolve(pluginOptions.name.replace("local:", "")));
+      } else if (this.builtinPluginMap.hasOwnProperty(pluginOptions.name)) {
+        pluginModule = require(`../plugins/${ pluginOptions.name }`);
+      } else {
+        pluginModule = require(`${ pluginOptions.name }`);
+      }
+      const plugin: IPlugin = new pluginModule[pluginOptions.name](api, this.options);
       plugin.build();
     });
     Console.log("\n--------------------------------------------------------------------");
