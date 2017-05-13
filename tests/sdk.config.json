@@ -5,6 +5,10 @@
     {
       "name": "TSModels",
       "options": {}
+    },
+    {
+      "name": "TSServices",
+      "options": {}
     }
   ],
   "settings": {

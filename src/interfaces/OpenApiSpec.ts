@@ -4,7 +4,7 @@ export interface IOpenApiSpec {
     version: string;
     title: string
   };
-  paths: { [key: string]: IPath; };
+  paths: IPaths;
   tags: ITag[];
   consumes: string[];
   produces: string[];
@@ -23,12 +23,47 @@ export interface IDefinition {
 }
 
 export interface IPath {
-  get?: object;
-  put?: object;
-  post?: object;
-  head?: object;
-  patch?: object;
-  delete?: object;
+  [key: string]: IHTTPMethod;
+  get?: IHTTPMethod;
+  put?: IHTTPMethod;
+  post?: IHTTPMethod;
+  head?: IHTTPMethod;
+  patch?: IHTTPMethod;
+  delete?: IHTTPMethod;
+}
+
+export interface IPaths {
+  [key: string]: IPath;
+}
+
+export interface IHTTPMethod {
+  tags: string[];
+  summary: string;
+  operationId: string;
+  parameters: IHTTPParameter[];
+  responses: IHTTPResponses;
+  deprecated: boolean;
+}
+
+export interface IHTTPParameter {
+  name: string;
+  in?: string;
+  description?: string;
+  required?: boolean;
+  type: string;
+  format?: string;
+  default?: any;
+}
+
+export interface IHTTPResponse {
+  description: string;
+  schema: {
+    "$ref": string,
+  };
+}
+
+export interface IHTTPResponses {
+  [key: string]: IHTTPResponse;
 }
 
 export interface IProperty {

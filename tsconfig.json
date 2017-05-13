@@ -16,6 +16,7 @@
       "ejs",
       "node",
       "chalk",
+      "mkdirp",
       "karma",
       "jasmine",
       "swagger-parser"

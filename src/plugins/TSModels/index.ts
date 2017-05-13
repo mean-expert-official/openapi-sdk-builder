@@ -1,5 +1,4 @@
 import { BasePlugin } from "../BasePlugin";
-import { Console } from "../../helpers/Console";
 import {
   IDefinition,
   IOpenApiSpec,
@@ -7,7 +6,6 @@ import {
   IParams,
   IPlugin,
   IProperties,
-  IProperty,
   ITemplate,
 } from "../../interfaces";
 /**
@@ -37,13 +35,13 @@ export class TSModels extends BasePlugin implements IPlugin {
    */
   public build(): void {
     // Build template schema
-    const schema: ITemplate[] = this.getModels().map((model: IDefinition) => {
+    const schema: ITemplate[] = this.getDefinitions().map((definition: IDefinition) => {
       // Create Template Parameters
-      // Basically we are passing the model definition and build property method
-      const params: IParams = { definition: model, buildProperties: this.buildProperties };
+      // Basically we are passing the definition definition and build property method
+      const params: IParams = { definition, buildProperties: this.buildProperties };
       // Return template configuration object
       return {
-          output: `/models/${ model.name }.ts`,
+          output: `/models/${ definition.name }.ts`,
           params,
           template: "TSModels/templates/model.ejs",
       };

@@ -1,9 +1,13 @@
 import * as ejs from "ejs";
 import * as fs from "fs";
 import * as path from "path";
+import * as mkdirp from "mkdirp";
 import { Console } from "../helpers/Console";
 import {
   IDefinition,
+  IHTTPMethod,
+  IPath,
+  IPaths,
   IOpenApiSpec,
   IOptions,
   ITag,
@@ -12,15 +16,15 @@ import {
 
 export class BasePlugin {
 
-  protected models: IDefinition[];
+  protected definitions: IDefinition[];
 
   constructor(protected api: IOpenApiSpec, protected options: IOptions) {
     this.api = api;
-    this.models = this.getModels();
+    this.definitions = this.getDefinitions();
     return this;
   }
 
-  protected getModels(): IDefinition[] {
+  protected getDefinitions(): IDefinition[] {
     return this.api.tags.filter((tag: ITag) => {
       return this.api.definitions[tag.name];
     }).map((tag: ITag) => {
@@ -29,9 +33,40 @@ export class BasePlugin {
     });
   }
 
+  protected getDefinitionPaths(definition: IDefinition): IPaths {
+    const paths: IPaths = {};
+    Object.keys(this.api.paths).forEach((pathName: string) => {
+      const path: IPath = this.api.paths[pathName];
+      let method: IHTTPMethod;
+      if (path.get) { method = path.get; }
+      if (path.put) { method = path.put; }
+      if (path.post) { method = path.post; }
+      if (path.head) { method = path.head; }
+      if (path.patch) { method = path.patch; }
+      if (path.delete) { method = path.delete; }
+      if (method.tags.find((tagName: string) => {
+        return tagName === definition.name;
+      })) {
+        paths[pathName] = path;
+      }
+    });
+    return paths;
+  }
+
+  protected normalizeOperationId(operationId: string): string {
+    operationId = operationId.match(".") ? operationId.split(".").pop() : operationId;
+    return operationId.replace("-", "_")
+                      .replace("{", "")
+                      .replace("}", "");
+  }
+
   protected render(schema: ITemplate[]): void {
     schema.forEach(
       (config: any) => {
+        const filePathArr: string[] = config.output.split(/\//); filePathArr.pop();
+        const directory: string = path.join(this.options.sdk, filePathArr.join("/"));
+        mkdirp.sync(directory);
+        console.log(directory);
         Console.log(`Generating: ${this.options.sdk}${config.output}`);
         fs.writeFileSync(`${this.options.sdk}${config.output}`,
           ejs.render(fs.readFileSync(
